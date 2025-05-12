@@ -1,6 +1,8 @@
-import { sql } from "@/db/config";
+import { sql } from "@/db/pg";
+import { redis } from "@/db/redis";
 import { searchParamsSchema } from "@/modules/home/schemas/search-params-schema";
 import { NextRequest } from "next/server";
+import { hash } from "ohash";
 import queryString from "query-string";
 
 export async function GET(req: NextRequest) {
@@ -26,17 +28,47 @@ export async function GET(req: NextRequest) {
         updatedAfter,
         lastFreq,
         lastName,
-        limit = 20,
+        limit = 10,
     } = parsed.data;
 
     const start = Date.now();
 
     try {
+        const [intent] = await sql`
+        WITH tokens AS (
+          SELECT unnest(string_to_array(unaccent(lower(${jobTitle})), ' ')) AS token
+        )
+        SELECT job_word
+        FROM keyword_alias
+        WHERE unaccent(lower(keyword)) = ${jobTitle}
+          OR unaccent(lower(keyword)) IN (SELECT token FROM tokens)
+        GROUP BY job_word
+        ORDER BY COUNT(*) DESC
+        LIMIT 1;
+    `;
+
+        const jobWord = intent?.job_word ?? jobTitle.trim();
+        const isFirstPage = !lastFreq && !lastName;
+        const cacheKey = `skills:${hash({
+            jobWord,
+            locations,
+            levels,
+            updatedAfter,
+            limit,
+        })}`;
+
+        if (isFirstPage) {
+            const cached = await redis.get(cacheKey);
+            if (cached) {
+                return Response.json(JSON.parse(cached));
+            }
+        }
+
         const rows = await sql`
       WITH
       params AS (
         SELECT
-          ${jobTitle}::text AS raw_input,
+          ${jobWord}::text AS raw_input,
           ${locations}::text[] AS filter_location,
           ${levels}::text[] AS filter_seniority,
           ${updatedAfter}::text AS filter_posted_date
@@ -149,8 +181,6 @@ export async function GET(req: NextRequest) {
 
         const duration = Date.now() - start;
 
-        console.log("cursor:", rows.length === limit);
-
         const nextCursor =
             rows.length === limit
                 ? {
@@ -161,7 +191,7 @@ export async function GET(req: NextRequest) {
                   }
                 : null;
 
-        return Response.json({
+        const responsePayload = {
             data: rows.map(
                 ({ frequencyPercent, matchedJobCount, ...rest }) => rest,
             ),
@@ -169,10 +199,21 @@ export async function GET(req: NextRequest) {
             meta: {
                 count: rows.length,
                 matchedJobCount: rows[0]?.matchedJobCount ?? 0,
-                duration: duration,
+                duration,
                 timestamp: new Date().toISOString(),
             },
-        });
+        };
+
+        if (isFirstPage) {
+            await redis.set(
+                cacheKey,
+                JSON.stringify(responsePayload),
+                "EX",
+                1800,
+            );
+        }
+
+        return Response.json(responsePayload);
     } catch (error) {
         console.error("Error fetching skills:", error);
         return Response.json(

@@ -43,6 +43,7 @@ export const SkillResults = () => {
 
     const meta = data?.pages[0].meta;
 
+    console.log("🚀 ~ SkillResults ~ data:", data);
     return (
         <div className="rounded-lg bg-white p-6 shadow-sm">
             <MetaDataDisplay {...meta} count={allSkills.length} />
