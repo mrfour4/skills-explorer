@@ -15,7 +15,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { useQuery } from "@tanstack/react-query";
-import { Check, ChevronsUpDown, Loader2, X } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, TriangleAlert, X } from "lucide-react";
 import { useState } from "react";
 import { isMatch } from "../lib/utils";
 
@@ -36,7 +36,7 @@ export const OptionsSelector = ({
 }: Props) => {
     const [open, setOpen] = useState(false);
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, isError, error } = useQuery({
         queryKey,
         queryFn,
     });
@@ -53,8 +53,8 @@ export const OptionsSelector = ({
         return <OptionsSelectorSkeleton label={label} />;
     }
 
-    if (!data) {
-        return <div>Error loading {label.toLowerCase()}</div>;
+    if (!data || isError) {
+        return <OptionsSelectorError label={label} error={error} />;
     }
 
     const onClearOption = () => {
@@ -145,6 +145,28 @@ export const OptionsSelectorSkeleton = ({ label }: { label: string }) => {
             >
                 Loading {label.toLowerCase()}...
                 <Loader2 className="text-muted-foreground mr-1 h-4 w-4 animate-spin" />
+            </Button>
+        </FormItem>
+    );
+};
+
+export const OptionsSelectorError = ({
+    label,
+    error,
+}: {
+    label: string;
+    error: Error | null;
+}) => {
+    return (
+        <FormItem>
+            <Label>{label}</Label>
+            <Button
+                disabled
+                variant="outline"
+                className="justify-between border-red-500 px-4 text-red-500 !opacity-100"
+            >
+                {error?.message || "Error loading options"}
+                <TriangleAlert className="mr-1 h-4 w-4 text-red-500" />
             </Button>
         </FormItem>
     );

@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { SKILL_BAR_SKELETON_WIDTHS } from "../constants";
 import { useGetSkillsInfinite } from "../hooks/use-skill";
 import { EmptyResults } from "./empty-results";
+import { ErrorState } from "./error-state";
 import { MetaDataDisplay } from "./meta-data-display";
 import { SkillBar } from "./skill-bar";
 
@@ -26,11 +27,7 @@ export const SkillResults = () => {
     }
 
     if (isError) {
-        return (
-            <div className="flex h-full items-center justify-center">
-                <p className="text-red-500">Error loading skills</p>
-            </div>
-        );
+        return <ErrorState />;
     }
 
     const allSkills = data?.pages.flatMap((page) => page.data) ?? [];
@@ -43,7 +40,6 @@ export const SkillResults = () => {
 
     const meta = data?.pages[0].meta;
 
-    console.log("🚀 ~ SkillResults ~ data:", data);
     return (
         <div className="rounded-lg bg-white p-6 shadow-sm">
             <MetaDataDisplay {...meta} count={allSkills.length} />
@@ -98,7 +94,7 @@ export const SkillResults = () => {
                         <Button
                             onClick={() => fetchNextPage()}
                             disabled={isFetchingNextPage}
-                            variant="outline"
+                            variant="secondary"
                             className="w-full md:w-auto"
                         >
                             {isFetchingNextPage ? (
