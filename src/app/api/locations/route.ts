@@ -1,23 +1,12 @@
-export async function getLocations() {
-    // In a real app, this would be a fetch call to your API
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    const locations: string[] = [
-        "Thành phố Hồ Chí Minh",
-        "Hà Nội",
-        "Đà Nẵng",
-        "Cần Thơ",
-        "Hải Phòng",
-        "Nha Trang",
-        "Vũng Tàu",
-    ];
-    return locations;
-}
+import { sql } from "@/db/config";
 
 export const GET = async () => {
     try {
-        const locations = await getLocations();
+        const results = await sql`
+            SELECT DISTINCT location FROM jobs ORDER BY location;
+        `;
+
+        const locations = results.map((row) => row.location);
         return Response.json(locations);
     } catch (error) {
         console.error("Error fetching locations:", error);

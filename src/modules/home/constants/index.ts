@@ -18,3 +18,5 @@ export const POPULAR_SEARCHES: string[] = [
     "UX Designer",
     "DevOps Engineer",
 ];
+
+export const SKILL_BAR_SKELETON_WIDTHS = [80, 60, 50, 50, 40, 40];

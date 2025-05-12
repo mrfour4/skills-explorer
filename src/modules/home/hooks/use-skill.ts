@@ -1,27 +1,28 @@
 import { useFilters } from "@/hooks/use-filters";
-import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import queryString from "query-string";
+import { Cursor, SkillApiResponse } from "../types";
 
-export const useGetSkills = () => {
+export const useGetSkillsInfinite = () => {
     const [filters] = useFilters();
 
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ["skills", filters],
-        queryFn: async () => {
+        enabled: !!filters.jobTitle,
+        initialPageParam: null,
+        queryFn: async ({ pageParam }: { pageParam: Cursor }) => {
             const searchParams = queryString.stringify(
                 {
                     ...filters,
-                    updatedAfter: filters.updatedAfter
-                        ? format(filters.updatedAfter, "yyyy-MM-dd")
-                        : null,
+                    updatedAfter: filters.updatedAfter?.toISOString(),
+                    lastFreq: pageParam?.lastFreq,
+                    lastName: pageParam?.lastName,
                 },
                 {
                     arrayFormat: "bracket",
                     skipNull: true,
                 },
             );
-            console.log("🚀 ~ queryFn: ~ searchParams:", searchParams);
 
             const res = await fetch(`api/skills?${searchParams}`);
 
@@ -29,8 +30,8 @@ export const useGetSkills = () => {
                 throw new Error("Failed to fetch skills");
             }
 
-            return (await res.json()) as Skill[];
+            return res.json() as Promise<SkillApiResponse>;
         },
-        enabled: !!filters.jobTitle,
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
     });
 };

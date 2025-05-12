@@ -1,21 +1,26 @@
-export async function getLevels() {
-    // In a real app, this would be a fetch call to your API
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+import { sql } from "@/db/config";
 
-    const levels: string[] = [
-        "Intern",
-        "Entry Level",
-        "Mid Level",
-        "Senior Level",
-        "Lead Level",
-        "Manager Level",
-    ];
-    return levels;
-}
 export const GET = async () => {
     try {
-        const levels = await getLevels();
+        const results = await sql`
+             SELECT DISTINCT seniority_level FROM jobs ORDER BY seniority_level desc; 
+        `;
+
+        const levelsTemp = results.map((row) => row.seniorityLevel);
+        // console.log("🚀 ~ GET ~ levelsTemp:", levelsTemp);
+
+        const levels: string[] = [
+            "Intern",
+            "Junior",
+            "Mid-level",
+            "Senior",
+            "Lead",
+            "Manager",
+            "Director",
+            "VP",
+            "Principal",
+            "CTO",
+        ];
         return Response.json(levels);
     } catch (error) {
         console.error("Error fetching levels:", error);

@@ -4,13 +4,13 @@ import { cn } from "@/lib/utils";
 
 interface Props {
     name: string;
-    frequency: number;
+    frequency: string;
     type: string;
 }
 
 export const SkillBar = ({ name, frequency, type }: Props) => {
     return (
-        <div className="mb-6">
+        <div className="space-y-2">
             <div className="mb-2 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <span className="font-medium">{name}</span>
@@ -27,10 +27,10 @@ export const SkillBar = ({ name, frequency, type }: Props) => {
                         {type === "tech" ? "Technical" : "Soft"}
                     </Badge>
                 </div>
-                <span className="font-bold">{frequency}%</span>
+                <span className="font-bold">{frequency}</span>
             </div>
 
-            <Progress value={frequency} className="h-3" />
+            <Progress value={parseFloat(frequency)} className="h-2.5" />
         </div>
     );
 };

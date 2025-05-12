@@ -9,15 +9,19 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { getLevels } from "../apis/get-levels";
 import { getLocations } from "../apis/get-locations";
-import { useGetSkills } from "../hooks/use-skill";
-import { SearchData, searchParamsSchema } from "../schemas/search-schema";
+import { useGetSkillsInfinite } from "../hooks/use-skill";
+import { getMonthAgo } from "../lib/utils";
+import {
+    FormSearchData,
+    formSearchSchema,
+} from "../schemas/form-search-schema";
 import { InputTitle } from "./input-title";
 import { OptionsSelector } from "./options-selector";
 import { SelectTime } from "./select-time";
 
 export const FormSearch = () => {
-    const form = useForm<SearchData>({
-        resolver: zodResolver(searchParamsSchema),
+    const form = useForm<FormSearchData>({
+        resolver: zodResolver(formSearchSchema),
         defaultValues: {
             jobTitle: "",
             locations: [],
@@ -26,16 +30,16 @@ export const FormSearch = () => {
     });
 
     const [filters, setFilters] = useFilters();
-    const { isLoading } = useGetSkills();
+    const { isLoading } = useGetSkillsInfinite();
 
     useEffect(() => {
         form.setValue("jobTitle", filters.jobTitle ?? "");
         form.setValue("locations", filters.locations ?? []);
         form.setValue("levels", filters.levels ?? []);
-        form.setValue("updatedAfter", filters.updatedAfter);
+        form.setValue("updatedAfter", filters.updatedAfter ?? getMonthAgo(6));
     }, [filters, form]);
 
-    const onSubmit = (data: SearchData) => {
+    const onSubmit = (data: FormSearchData) => {
         if (isLoading) {
             return;
         }
