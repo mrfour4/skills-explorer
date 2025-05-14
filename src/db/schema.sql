@@ -142,3 +142,22 @@ INSERT INTO keyword_alias (job_word, keyword) VALUES
 ('Cybersecurity Engineer', 'cybersec'),
 ('Cybersecurity Engineer', 'infosec'),
 ('Cybersecurity Engineer', 'pentester');
+
+
+-- =============================================
+CREATE TABLE job_positions (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL
+);
+
+ALTER TABLE jobs
+ADD COLUMN job_position_id INTEGER;
+
+ALTER TABLE jobs
+ADD CONSTRAINT fk_job_position
+FOREIGN KEY (job_position_id)
+REFERENCES job_positions(id)
+ON DELETE SET NULL;
+
+CREATE INDEX IF NOT EXISTS idx_jobs_job_position_id ON jobs(job_position_id);
+
