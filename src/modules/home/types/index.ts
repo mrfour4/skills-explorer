@@ -9,13 +9,13 @@ export type Cursor = {
     lastName: string;
 } | null;
 
-type SkillApiResponse = {
+export type SkillApiResponse = {
     data: Skill[];
     nextCursor: Cursor;
     meta: {
         count: number;
-        matched_job_count: number;
-        duration_ms: number;
+        matchedJobCount: number;
+        duration: number;
         timestamp: string;
     };
 };

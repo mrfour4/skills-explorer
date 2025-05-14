@@ -15,7 +15,6 @@ export function MetaDataDisplay({
     timestamp,
 }: MetaDataProps) {
     const formattedDate = format(timestamp, "dd/MM/yyyy");
-    const formattedTime = format(timestamp, "HH:mm");
 
     const formattedDuration =
         duration < 1000 ? `${duration}ms` : `${(duration / 1000).toFixed(2)}s`;

@@ -40,9 +40,17 @@ export const SkillResults = () => {
 
     const meta = data?.pages[0].meta;
 
+    if (!meta) {
+        return null;
+    }
+
+    meta.count = allSkills.length;
+
+    console.log("data", data);
+
     return (
         <div className="rounded-lg bg-white p-6 shadow-sm">
-            <MetaDataDisplay {...meta} count={allSkills.length} />
+            <MetaDataDisplay {...meta} />
             <Tabs defaultValue="all">
                 <div className="mb-6 flex items-center justify-between">
                     <h2 className="text-2xl font-bold">
