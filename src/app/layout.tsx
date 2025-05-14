@@ -33,14 +33,14 @@ export const metadata: Metadata = {
     openGraph: {
         type: "website",
         locale: "en_US",
-        url: "http://localhost:3000",
+        url: "https://skills-explorer.vercel.app",
         title: "Job Skills Explorer | Find In-Demand Skills for Your Career",
         description:
             "Discover the most in-demand skills for different job positions. Search by job title, experience level, and location.",
         siteName: "Job Skills Explorer",
         images: [
             {
-                url: "/og-image.png",
+                url: "/opengraph-image.jpg",
                 width: 1200,
                 height: 630,
                 alt: "Job Skills Explorer",
@@ -52,8 +52,8 @@ export const metadata: Metadata = {
         title: "Job Skills Explorer | Find In-Demand Skills for Your Career",
         description:
             "Discover the most in-demand skills for different job positions. Search by job title, experience level, and location.",
-        images: ["/twitter-image.png"],
-        creator: "@mrfour4",
+        images: ["/twitter-image.jpg"],
+        creator: "@TLQu9",
     },
     robots: {
         index: true,
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
         },
     },
     alternates: {
-        canonical: "http://localhost:3000",
+        canonical: "https://skills-explorer.vercel.app",
     },
 };
 
