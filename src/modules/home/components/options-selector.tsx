@@ -95,8 +95,7 @@ export const OptionsSelector = ({
                 <PopoverContent className="w-[250px] p-0">
                     <Command
                         filter={(value, search) => {
-                            const match = isMatch(value, search);
-
+                            const match = isMatch(search, value);
                             return match ? 1 : 0;
                         }}
                     >

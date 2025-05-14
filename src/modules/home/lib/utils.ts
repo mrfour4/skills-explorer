@@ -7,10 +7,13 @@ function normalizeText(text: string): string {
         .trim();
 }
 
-export function isMatch(a: string, b: string): boolean {
-    const normA = normalizeText(a);
-    const normB = normalizeText(b);
-    return normA.includes(normB) || normB.includes(normA);
+export function isMatch(input: string, target: string): boolean {
+    const inputTokens = normalizeText(input).split(" ");
+    const targetTokens = normalizeText(target).split(" ");
+
+    return inputTokens.every((inputToken) =>
+        targetTokens.some((targetToken) => targetToken.startsWith(inputToken)),
+    );
 }
 
 export function getMonthAgo(months: number): Date {
