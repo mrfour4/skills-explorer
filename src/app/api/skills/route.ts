@@ -63,13 +63,14 @@ export async function GET(req: NextRequest) {
             if (cached) {
                 const duration = Date.now() - start;
                 const responsePayload = JSON.parse(cached);
-                return Response.json({
-                    ...responsePayload,
-                    meta: {
-                        ...responsePayload.meta,
-                        duration,
-                    },
-                });
+                return Response.json(responsePayload);
+                // return Response.json({
+                //     ...responsePayload,
+                //     meta: {
+                //         ...responsePayload.meta,
+                //         duration,
+                //     },
+                // });
             }
         }
 
