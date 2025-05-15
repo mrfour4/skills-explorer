@@ -231,7 +231,7 @@ export async function GET(req: NextRequest) {
                 cacheKey,
                 JSON.stringify(responsePayload),
                 "EX",
-                1800,
+                14400,
             );
         }
 
