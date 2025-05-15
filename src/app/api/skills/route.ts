@@ -57,21 +57,21 @@ export async function GET(req: NextRequest) {
             limit,
         })}`;
 
-        // if (isFirstPage) {
-        //     const cached = await redis.get(cacheKey);
+        if (isFirstPage) {
+            const cached = await redis.get(cacheKey);
 
-        //     if (cached) {
-        //         const duration = Date.now() - start;
-        //         const responsePayload = JSON.parse(cached);
-        //         return Response.json({
-        //             ...responsePayload,
-        //             meta: {
-        //                 ...responsePayload.meta,
-        //                 duration,
-        //             },
-        //         });
-        //     }
-        // }
+            if (cached) {
+                const duration = Date.now() - start;
+                const responsePayload = JSON.parse(cached);
+                return Response.json({
+                    ...responsePayload,
+                    meta: {
+                        ...responsePayload.meta,
+                        duration,
+                    },
+                });
+            }
+        }
 
         const rows = await sql`
   WITH
