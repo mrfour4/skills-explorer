@@ -215,3 +215,21 @@ GROUP BY
     interval_label, job_position_id, location, seniority_level
   );
 
+---- ============================================
+DROP TABLE IF EXISTS job_token_index;
+
+CREATE TABLE job_token_index (
+  job_id INTEGER NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+  token TEXT NOT NULL
+);
+
+-- Tạo GIN index cho fuzzy search trên token
+CREATE INDEX idx_token_trgm ON job_token_index
+USING gin (token gin_trgm_ops);
+
+INSERT INTO job_token_index (job_id, token)
+SELECT
+  j.id,
+  unnest(string_to_array(unaccent(lower(j.job_title)), ' '))
+FROM jobs j
+WHERE j.job_title IS NOT NULL;
