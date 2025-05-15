@@ -8,9 +8,7 @@ export default function Loading() {
             <div className="mb-8 flex justify-center">
                 <div className="flex items-center gap-3">
                     <Loader2 className="text-primary h-6 w-6 animate-spin" />
-                    <h1 className="text-2xl font-bold">
-                        Loading Job Skills Explorer...
-                    </h1>
+                    <h1 className="text-2xl font-bold">Loading HIRELENS...</h1>
                 </div>
             </div>
 

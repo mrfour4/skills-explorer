@@ -7,7 +7,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Job Skills Explorer | Find In-Demand Skills for Your Career",
+    title: "HIRELENS | Find In-Demand Skills for Your Career",
     description:
         "Discover the most in-demand skills for different job positions. Search by job title, experience level, and location to find the skills you need for your career.",
     keywords: [
@@ -22,9 +22,9 @@ export const metadata: Metadata = {
         "job search",
         "resume analysis",
     ],
-    authors: [{ name: "Job Skills Explorer Team" }],
-    creator: "Job Skills Explorer",
-    publisher: "Job Skills Explorer",
+    authors: [{ name: "HIRELENS Team" }],
+    creator: "HIRELENS",
+    publisher: "HIRELENS",
     formatDetection: {
         email: false,
         address: false,
@@ -34,22 +34,22 @@ export const metadata: Metadata = {
         type: "website",
         locale: "en_US",
         url: "https://skills-explorer.vercel.app",
-        title: "Job Skills Explorer | Find In-Demand Skills for Your Career",
+        title: "HIRELENS | Find In-Demand Skills for Your Career",
         description:
             "Discover the most in-demand skills for different job positions. Search by job title, experience level, and location.",
-        siteName: "Job Skills Explorer",
+        siteName: "HIRELENS",
         images: [
             {
                 url: "/opengraph-image.jpg",
                 width: 1200,
                 height: 630,
-                alt: "Job Skills Explorer",
+                alt: "HIRELENS",
             },
         ],
     },
     twitter: {
         card: "summary_large_image",
-        title: "Job Skills Explorer | Find In-Demand Skills for Your Career",
+        title: "HIRELENS | Find In-Demand Skills for Your Career",
         description:
             "Discover the most in-demand skills for different job positions. Search by job title, experience level, and location.",
         images: ["/twitter-image.jpg"],
@@ -88,10 +88,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
-                <meta
-                    name="apple-mobile-web-app-title"
-                    content="Job Skills Explorer"
-                />
+                <meta name="apple-mobile-web-app-title" content="HIRELENS" />
             </head>
             <body className={inter.className}>
                 <QueryProvider>

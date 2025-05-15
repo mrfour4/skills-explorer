@@ -161,3 +161,57 @@ ON DELETE SET NULL;
 
 CREATE INDEX IF NOT EXISTS idx_jobs_job_position_id ON jobs(job_position_id);
 
+-- ============================
+DROP MATERIALIZED VIEW IF EXISTS mv_skill_count_by_position;
+
+CREATE MATERIALIZED VIEW mv_skill_count_by_position AS
+WITH time_frames AS (
+  SELECT
+    label,
+    since_interval,
+    CURRENT_DATE - since_interval AS since_date
+  FROM (
+    VALUES
+      ('1m', INTERVAL '1 month'),
+      ('3m', INTERVAL '3 months'),
+      ('6m', INTERVAL '6 months'),
+      ('1y', INTERVAL '1 year'),
+      ('2y', INTERVAL '2 years')
+  ) AS tf(label, since_interval)
+),
+job_skills_with_time AS (
+  SELECT
+    j.job_position_id,
+    j.location,
+    j.seniority_level,
+    s.name AS skill_name,
+    s.type AS skill_type,
+    tf.label AS interval_label
+  FROM jobs j
+  JOIN job_skills js ON js.job_id = j.id
+  JOIN skills s ON s.id = js.skill_id
+  JOIN time_frames tf ON j.posted_date >= tf.since_date
+  WHERE j.job_position_id IS NOT NULL
+)
+SELECT
+  job_position_id,
+  location,
+  seniority_level,
+  skill_name,
+  skill_type,
+  interval_label,
+  COUNT(*) AS skill_count
+FROM job_skills_with_time
+GROUP BY
+  job_position_id,
+  location,
+  seniority_level,
+  skill_name,
+  skill_type,
+  interval_label;
+
+  CREATE INDEX IF NOT EXISTS idx_mv_by_filters
+  ON mv_skill_count_by_position (
+    interval_label, job_position_id, location, seniority_level
+  );
+
